@@ -110,7 +110,7 @@ contract("LootBox", (accounts) => {
           prize: 10000
         });
 
-        var bounty = [{availableQty: 33,nfTokens: [1,2,3],nftTokensQty: [1,1,1],prize: 10000}]
+        var bounty = [{availableQty: 33,nfTokens: [1,1,3],nftTokensQty: [1,1,1],prize: 10000}]
 
         this.sampleBounty = getSampleBounty();
       await this.claimBounty.addBounty(bounty);

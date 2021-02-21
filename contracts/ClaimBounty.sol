@@ -129,12 +129,24 @@ contract ClaimBounty is Ownable, Pausable, ReentrancyGuard {
     function _addBountySheet(BountySheet memory bS) internal {
         require(bS.prize > 0, "Prize cannot be 0");
         require(bS.nfTokens.length == bS.nftTokensQty.length);
+        require(_checkSameNFTIdInBounty(bS.nfTokens), "NFT Token cannot be same ID");
         _bountySheets.push(bS);
 
     }
 
     function allBountySheets() external view returns(BountySheet[] memory) {
         return _bountySheets;
+    }
+
+    function _checkSameNFTIdInBounty(uint256[] memory _ids) internal returns(bool){
+        for(uint i = 0 ;  i < _ids.length ; i++){
+            for(uint j = i+1 ; j < _ids.length ; j++){
+                if(_ids[i] == _ids[j]){
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
 
