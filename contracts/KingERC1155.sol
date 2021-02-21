@@ -665,7 +665,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
 }
 
 contract KingERC1155 is ERC1155, Ownable, ReentrancyGuard {
-    constructor() ERC1155("https://app.nftlootbox.com/api/card/{id}") {}
+    constructor() ERC1155("https://thekingswap.github.io/ERC1155/api/token/{id}") {}
 
     mapping(address => bool) public isMinter;
 
