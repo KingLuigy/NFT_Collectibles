@@ -9,7 +9,7 @@ import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
-pragma solidity 0.7.3;
+pragma solidity 0.6.12;
 
 /**
  * @dev Interface of the ERC165 standard, as defined in the
@@ -226,7 +226,7 @@ abstract contract ERC165 is IERC165 {
      */
     mapping(bytes4 => bool) private _supportedInterfaces;
 
-    constructor public() {
+    constructor () public{
         // Derived contracts need only register support for their own interfaces,
         // we register support for ERC165 itself here
         _registerInterface(_INTERFACE_ID_ERC165);
@@ -304,7 +304,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     /**
      * @dev See {_setURI}.
      */
-    constructor public (string memory uri_) {
+    constructor  (string memory uri_) public{
         _setURI(uri_);
 
         // register the supported interfaces to conform to ERC1155 via ERC165

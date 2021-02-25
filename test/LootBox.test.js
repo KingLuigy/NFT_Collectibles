@@ -110,7 +110,12 @@ contract("LootBox", (accounts) => {
           prize: 10000
         });
 
-        var bounty = [{availableQty: 33,nfTokens: [1,1,3],nftTokensQty: [1,1,1],prize: 10000}]
+        var bounty = [{
+          availableQty: 1,
+          nfTokens: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60],
+          nftTokensQty: [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+          prize: 10000
+      }]
 
         this.sampleBounty = getSampleBounty();
       await this.claimBounty.addBounty(bounty);
@@ -167,17 +172,17 @@ contract("LootBox", (accounts) => {
         });
 
         it("claiming Bounty", async () => {
-          var nftIds = [1,2,3];
-          var nftQty = [10,10,10];
-          var nftQtyToClaim = [1,1,1];
+          var nftIds = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60];
+          var nftQty = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
+          var nftQtyToClaim = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
           await this.kingERC1155.mintBatch(accounts[1],nftIds,nftQty,{ from: accounts[0] });
           await this.claimBounty.claim(1,nftIds,nftQtyToClaim,{ from: accounts[1] });
 
-          assert.equal(await this.kingERC1155.balanceOf(accounts[1],1).valueOf(), '9');
-          assert.equal(await this.kingERC1155.balanceOf(accounts[1],2).valueOf(), '9');
-          assert.equal(await this.kingERC1155.balanceOf(accounts[1],3).valueOf(), '9');
+          assert.equal(await this.kingERC1155.balanceOf(accounts[1],1).valueOf(), '0');
+          assert.equal(await this.kingERC1155.balanceOf(accounts[1],2).valueOf(), '0');
+          assert.equal(await this.kingERC1155.balanceOf(accounts[1],3).valueOf(), '0');
           console.log("Balance of Account[1] :" + await this.mockERC20.balanceOf(accounts[1]).valueOf());
-          assert.equal(await this.mockERC20.balanceOf(accounts[1]).valueOf(), ':1000000000000000010000');
+          assert.equal(await this.mockERC20.balanceOf(accounts[1]).valueOf(), '1000000000000000010000');
 
         });
 
