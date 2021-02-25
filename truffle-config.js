@@ -77,7 +77,7 @@ module.exports = {
   fix_paths: true,
   compilers: {
     solc: {
-      version: "0.7.3",
+      version: "0.6.12",
       docker: false,
       parser: "solcjs",
       settings: {

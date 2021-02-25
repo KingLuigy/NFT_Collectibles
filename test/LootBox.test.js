@@ -86,6 +86,13 @@ contract("LootBox", (accounts) => {
       await this.mockERC20.approve(this.claimBounty.address, "100000" + e18, {
         from: accounts[0],
       });
+
+      await this.oldmockERC20.approve(this.lootbox.address, "100000" + e18, {
+        from: accounts[0],
+      });
+      await this.oldmockERC20.approve(this.claimBounty.address, "100000" + e18, {
+        from: accounts[0],
+      });
       await new Array(9)
         .fill(0)
         .reduce(
@@ -105,6 +112,31 @@ contract("LootBox", (accounts) => {
           (promises, _, i) =>
             promises.then(() =>
               this.mockERC20.approve(this.lootbox.address, "1000" + e18, {
+                from: accounts[i + 1],
+              })
+            ),
+          Promise.resolve()
+        );
+
+        await new Array(9)
+        .fill(0)
+        .reduce(
+          (promises, _, i) =>
+            promises.then(() =>
+              this.oldmockERC20.transfer(accounts[i + 1], "1000" + e18, {
+                from: accounts[0],
+              })
+            ),
+          Promise.resolve()
+        );
+
+        
+      await new Array(9)
+        .fill(0)
+        .reduce(
+          (promises, _, i) =>
+            promises.then(() =>
+              this.oldmockERC20.approve(this.lootbox.address, "1000" + e18, {
                 from: accounts[i + 1],
               })
             ),
@@ -139,7 +171,7 @@ contract("LootBox", (accounts) => {
       });
 
       it("Try Open Lootbox and receive ERC1155 Randomly", async () => {
-        await this.lootbox.openTwenty(accounts[1], { from: accounts[0] });
+        await this.lootbox.openThreeOldKing(accounts[1], { from: accounts[0] });
         var i;
         var count = 0;
         var total = 0;
