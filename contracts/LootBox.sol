@@ -20,6 +20,7 @@ contract LootBox is Ownable, Pausable, ReentrancyGuard {
     uint256 rarePackPriceMultiplier = 10;
     uint256 normalPackPriceMultiplier = 3;
     IERC20 public xking;
+    IERC20 public oldKing;
 
     address public treasury;
 
@@ -45,11 +46,13 @@ contract LootBox is Ownable, Pausable, ReentrancyGuard {
     constructor(
         address  _treasury,
         KingERC1155 _erc1155,
-        address _erc20
+        address _erc20,
+        address _oldKing
     ) public {
         erc1155 = _erc1155;
         treasury = _treasury;
         xking = IERC20(_erc20);
+        oldKing = IERC20(_oldKing);
     }
 
 
@@ -160,6 +163,116 @@ contract LootBox is Ownable, Pausable, ReentrancyGuard {
             amounts[i] = 1;
         }
         xking.transferFrom(msg.sender,treasury,amountToPool);
+        erc1155.mintBatch(msg.sender,ids,amounts);
+        return(ids);
+  }
+
+    /**
+   * @dev Main minting logic for lootboxes
+   * This is called via safeTransferFrom when MyLootBox extends MyFactory.
+   * NOTE: prices and fees are determined by the sell order on OpenSea.
+   */
+    function openThreeOldKing(address _referrer
+  ) public nonReentrant returns(uint256[] memory)  {
+
+     
+      uint256[] memory ids = _pick3RandomNFT();
+
+
+        if (
+            _referrer != address(0) &&
+            _referrer != msg.sender &&
+            referrers[msg.sender] == address(0)
+        ) {
+            // msg.sender has no referer and has entered a referrer name
+            referrers[msg.sender] = _referrer;
+        }
+
+        uint256 amountToPool = basePrice.mul(normalPackPriceMultiplier);
+        address actualReferrer = referrers[msg.sender];
+
+        if (actualReferrer != address(0)) {
+            uint256 referrerAward = amountToPool.div(10);
+            amountToPool = amountToPool.sub(referrerAward);
+            oldKing.transferFrom(msg.sender, actualReferrer, referrerAward);
+        }
+
+        uint256[] memory amounts = new uint256[](3);
+
+        
+        for(uint i = 0 ; i < 3 ; i ++){
+            amounts[i] = 1;
+        }
+        oldKing.transferFrom(msg.sender,treasury,amountToPool);
+        erc1155.mintBatch(msg.sender,ids,amounts);
+
+        return(ids);
+      
+  }
+
+      function openTenOldKing(address _referrer
+  ) public nonReentrant returns(uint256[] memory)  {
+  
+      uint256[] memory ids = _pick10RandomNFT();
+
+        if (
+            _referrer != address(0) &&
+            _referrer != msg.sender &&
+            referrers[msg.sender] == address(0)
+        ) {
+            // msg.sender has no referer and has entered a referrer name
+            referrers[msg.sender] = _referrer;
+        }
+
+        uint256 amountToPool = basePrice.mul(rarePackPriceMultiplier);
+        address actualReferrer = referrers[msg.sender];
+
+        if (actualReferrer != address(0)) {
+            uint256 referrerAward = amountToPool.div(10);
+            amountToPool = amountToPool.sub(referrerAward);
+            oldKing.transferFrom(msg.sender, actualReferrer, referrerAward);
+        }
+
+        uint256[] memory amounts = new uint256[](10);
+
+        
+        for(uint i = 0 ; i < 10 ; i ++){
+            amounts[i] = 1;
+        }
+        oldKing.transferFrom(msg.sender,treasury,amountToPool);
+        erc1155.mintBatch(msg.sender,ids,amounts);
+        return(ids);
+  }
+
+      function openTwentyOldKing(address _referrer
+  ) public nonReentrant returns(uint256[] memory) {
+      uint256[] memory ids = _pick20RandomNFT();
+
+        if (
+            _referrer != address(0) &&
+            _referrer != msg.sender &&
+            referrers[msg.sender] == address(0)
+        ) {
+            // msg.sender has no referer and has entered a referrer name
+            referrers[msg.sender] = _referrer;
+        }
+
+        uint256 amountToPool = basePrice.mul(legendPackPriceMultiplier);
+        address actualReferrer = referrers[msg.sender];
+
+        if (actualReferrer != address(0)) {
+            uint256 referrerAward = amountToPool.div(10);
+            amountToPool = amountToPool.sub(referrerAward);
+            oldKing.transferFrom(msg.sender, actualReferrer, referrerAward);
+        }
+
+        uint256[] memory amounts = new uint256[](20);
+
+        
+        for(uint i = 0 ; i < 20 ; i ++){
+            amounts[i] = 1;
+        }
+        oldKing.transferFrom(msg.sender,treasury,amountToPool);
         erc1155.mintBatch(msg.sender,ids,amounts);
         return(ids);
   }

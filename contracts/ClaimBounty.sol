@@ -36,6 +36,7 @@ contract ClaimBounty is Ownable, Pausable, ReentrancyGuard {
 
 
 
+
     constructor(
         KingERC1155 _erc1155,
         address  _treasury,
@@ -44,6 +45,7 @@ contract ClaimBounty is Ownable, Pausable, ReentrancyGuard {
         treasury = _treasury;
         erc1155 = _erc1155;
         erc20 = IERC20(_erc20);
+
     }
 
 

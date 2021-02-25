@@ -14,6 +14,13 @@ contract("LootBox", (accounts) => {
         "10000000000000000000000000000",
         { from: accounts[0] }
       );
+
+      this.oldmockERC20 = await MockERC20.new(
+        "mock",
+        "test",
+        "10000000000000000000000000000",
+        { from: accounts[0] }
+      );
       this.kingERC1155 = await KingERC1155.new(
         { from: accounts[0] }
       );
@@ -22,6 +29,7 @@ contract("LootBox", (accounts) => {
         accounts[0],
         this.kingERC1155.address,
         this.mockERC20.address,
+        this.oldmockERC20.address,
         { from: accounts[0] }
       );
 
