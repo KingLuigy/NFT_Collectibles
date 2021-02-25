@@ -60,7 +60,9 @@ contract LootBox is Ownable, Pausable, ReentrancyGuard {
    * NOTE: prices and fees are determined by the sell order on OpenSea.
    */
     function openThree(address _referrer
-  ) public nonReentrant {
+  ) public nonReentrant returns(uint256[] memory)  {
+
+     
       uint256[] memory ids = _pick3RandomNFT();
 
 
@@ -77,7 +79,7 @@ contract LootBox is Ownable, Pausable, ReentrancyGuard {
         address actualReferrer = referrers[msg.sender];
 
         if (actualReferrer != address(0)) {
-            uint256 referrerAward = amountToPool.div(20);
+            uint256 referrerAward = amountToPool.div(10);
             amountToPool = amountToPool.sub(referrerAward);
             xking.transferFrom(msg.sender, actualReferrer, referrerAward);
         }
@@ -90,10 +92,14 @@ contract LootBox is Ownable, Pausable, ReentrancyGuard {
         }
         xking.transferFrom(msg.sender,treasury,amountToPool);
         erc1155.mintBatch(msg.sender,ids,amounts);
+
+        return(ids);
+      
   }
 
       function openTen(address _referrer
-  ) public nonReentrant {
+  ) public nonReentrant returns(uint256[] memory)  {
+  
       uint256[] memory ids = _pick10RandomNFT();
 
         if (
@@ -105,11 +111,11 @@ contract LootBox is Ownable, Pausable, ReentrancyGuard {
             referrers[msg.sender] = _referrer;
         }
 
-        uint256 amountToPool = basePrice.mul(normalPackPriceMultiplier);
+        uint256 amountToPool = basePrice.mul(rarePackPriceMultiplier);
         address actualReferrer = referrers[msg.sender];
 
         if (actualReferrer != address(0)) {
-            uint256 referrerAward = amountToPool.div(20);
+            uint256 referrerAward = amountToPool.div(10);
             amountToPool = amountToPool.sub(referrerAward);
             xking.transferFrom(msg.sender, actualReferrer, referrerAward);
         }
@@ -122,10 +128,11 @@ contract LootBox is Ownable, Pausable, ReentrancyGuard {
         }
         xking.transferFrom(msg.sender,treasury,amountToPool);
         erc1155.mintBatch(msg.sender,ids,amounts);
+        return(ids);
   }
 
       function openTwenty(address _referrer
-  ) public nonReentrant {
+  ) public nonReentrant returns(uint256[] memory) {
       uint256[] memory ids = _pick20RandomNFT();
 
         if (
@@ -137,11 +144,11 @@ contract LootBox is Ownable, Pausable, ReentrancyGuard {
             referrers[msg.sender] = _referrer;
         }
 
-        uint256 amountToPool = basePrice.mul(normalPackPriceMultiplier);
+        uint256 amountToPool = basePrice.mul(legendPackPriceMultiplier);
         address actualReferrer = referrers[msg.sender];
 
         if (actualReferrer != address(0)) {
-            uint256 referrerAward = amountToPool.div(20);
+            uint256 referrerAward = amountToPool.div(10);
             amountToPool = amountToPool.sub(referrerAward);
             xking.transferFrom(msg.sender, actualReferrer, referrerAward);
         }
@@ -154,6 +161,7 @@ contract LootBox is Ownable, Pausable, ReentrancyGuard {
         }
         xking.transferFrom(msg.sender,treasury,amountToPool);
         erc1155.mintBatch(msg.sender,ids,amounts);
+        return(ids);
   }
 
     function _pickGuaranteedCommonNFT(
@@ -220,6 +228,7 @@ contract LootBox is Ownable, Pausable, ReentrancyGuard {
         }
         return 1;
     } 
+
 
     function _pick3RandomNFT(
     ) internal returns (uint256[] memory) {
