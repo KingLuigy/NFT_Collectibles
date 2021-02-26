@@ -667,29 +667,91 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
 contract KingERC1155 is ERC1155, Ownable, ReentrancyGuard {
     constructor() public ERC1155("https://thekingswap.github.io/ERC1155/api/token/{id}.json") {}
 
-    mapping(address => bool) public isMinter;
+    uint256 private _currentTokenID;
+    mapping (address => bool) public isCreator;
 
-    function setMinter(address minter, bool status) public nonReentrant onlyOwner {
-        isMinter[minter] = status;
+    modifier creatorsOnly() {
+        require(isCreator[msg.sender], "King1155:ONLY_CREATOR_ALLOWED");
+        _;
     }
 
-    function mint(address to, uint256 id, uint256 amount) public nonReentrant {
-      require(isMinter[_msgSender()] == true, "Caller is not a minter");
-      _mint(to, id, amount, "");
+
+    function mint(address _to, uint256 _id, uint256 _amount) public creatorsOnly nonReentrant {
+        require(_id < _getNextTokenID(), "King1155:UNKNOWN_TOKEN_ID");
+        requireNonZeroTo(_to);
+        _mint(_to, _id, _amount, "");
     }
 
-    function mintBatch(address to, uint256[] memory ids, uint256[] memory amounts) public nonReentrant {
-      require(isMinter[_msgSender()] == true, "Caller is not a minter");
-      _mintBatch(to,ids,amounts,"");
+    function mintBatch(address _to, uint256[] memory _ids, uint256[] memory _amounts) public creatorsOnly nonReentrant {
+        requireNonZeroTo(_to);
+        uint256 nextTokenId = _getNextTokenID();
+        for (uint256 i = 0; i < _ids.length; i++) {
+            require(_ids[i] < nextTokenId, "King1155:UNKNOWN_TOKEN_ID");
+        }
+        _mintBatch(_to, _ids, _amounts, "");
     }
 
-    function burn(address account, uint256 id, uint256 amount) public nonReentrant {
-         require(isMinter[_msgSender()] == true, "Caller is not a minter");
+    function burn(address account, uint256 id, uint256 amount)  public creatorsOnly nonReentrant {
         _burn(account, id, amount); 
     }
 
-    function burnBatch(address account,uint256[] memory ids, uint256[] memory amounts) public nonReentrant {
-         require(isMinter[_msgSender()] == true, "Caller is not a minter");
+    function burnBatch(address account,uint256[] memory ids, uint256[] memory amounts)  public creatorsOnly nonReentrant {
         _burnBatch(account, ids, amounts);
+    }
+
+    
+    function create(
+        address _initialOwner,
+        uint256 _initialSupply
+    ) external creatorsOnly nonReentrant returns (uint256) {
+        requireNonZeroTo(_initialOwner);
+
+        uint256 _id = _getNextTokenID();
+        _incrementTokenTypeId(1);
+
+        _mint(_initialOwner, _id, _initialSupply, "");
+        return _id;
+    }
+
+    function createBatch(
+        address _initialOwner,
+        uint256[] memory _initialSupplies
+    ) external creatorsOnly nonReentrant returns (uint256 _firstId, uint256 _lastId)
+    {
+        requireNonZeroTo(_initialOwner);
+
+        uint256 n = _initialSupplies.length;
+        uint256 _nextId = _getNextTokenID();
+        _firstId = _nextId;
+        _lastId = _firstId + n;
+
+        for (uint256 i = 0; i < n; i++) {
+            _mint(_initialOwner, _nextId + i, _initialSupplies[i], "");
+        }
+        _incrementTokenTypeId(n);
+    }
+
+    function setCreator(
+        address _creator,
+        bool _isCreator
+    ) public onlyOwner{
+        require(_creator != address(0), "King1155:CREATOR_IS_ZERO_ADDRESS");
+        isCreator[_creator] = _isCreator;
+    }
+
+    function _getNextTokenID() private view returns (uint256) {
+        return _currentTokenID + 1;
+    }
+
+    function _incrementTokenTypeId(uint256 n) private  {
+        _currentTokenID = _currentTokenID + n;
+    }
+
+    function requireNonZeroFrom(address _to) internal pure {
+        require(_to != address(0),"ERC1155:SENDER_IS_ZERO_ADDRESS");
+    }
+
+    function requireNonZeroTo(address _to) internal pure {
+        require(_to != address(0),"ERC1155:RECEIVER_IS_ZERO_ADDRESS");
     }
 }

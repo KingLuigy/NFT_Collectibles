@@ -66,7 +66,9 @@ contract ClaimBounty is Ownable, Pausable, ReentrancyGuard {
         require(hasBalance, "Does not have required NFT to claim bounty");
         erc1155.burnBatch(msg.sender,_nftId,_amount);
         erc20.safeTransferFrom(treasury,msg.sender,bountAmt);
-        bs.availableQty = bs.availableQty.sub(1);
+        if(bs.availableQty != 255){
+            bs.availableQty = bs.availableQty.sub(1);
+        }
 
     }
 
@@ -130,6 +132,7 @@ contract ClaimBounty is Ownable, Pausable, ReentrancyGuard {
 
     function _addBountySheet(BountySheet memory bS) internal {
         require(bS.prize > 0, "Prize cannot be 0");
+        require(bS.availableQty <= 255, "availableQty must be less than or equal to 255 ");
         require(bS.nfTokens.length == bS.nftTokensQty.length);
         require(_checkSameNFTIdInBounty(bS.nfTokens), "NFT Token cannot be same ID");
         _bountySheets.push(bS);
@@ -149,6 +152,14 @@ contract ClaimBounty is Ownable, Pausable, ReentrancyGuard {
             }
         }
         return true;
+    }
+
+    function updateAvailableQty(
+        uint256 bountyId,
+        uint256 newQty
+    ) external onlyOwner {
+        require(newQty <= 255, "KDecks:INVALID_availableQty");
+        _bountySheets[_validBountyID(bountyId) - 1].availableQty = uint256(newQty);
     }
 
 

@@ -75,10 +75,14 @@ contract("LootBox", (accounts) => {
         { from: accounts[0] }
       );
 
-      await this.kingERC1155.setMinter(this.lootbox.address, true);
-      await this.kingERC1155.setMinter(accounts[0], true);
-      await this.kingERC1155.setMinter(this.claimBounty.address, true);
+      await this.kingERC1155.setCreator(this.lootbox.address, true);
+      await this.kingERC1155.setCreator(accounts[0], true);
+      await this.kingERC1155.setCreator(this.claimBounty.address, true);
 
+      await this.kingERC1155.createBatch(accounts[0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
+      await this.kingERC1155.createBatch(accounts[0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
+      await this.kingERC1155.createBatch(accounts[0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]);
+      await this.kingERC1155.createBatch(accounts[0],[0,0,0,0,0,0,0,0,0,0,0,0]);
 
       await this.mockERC20.approve(this.lootbox.address, "100000" + e18, {
         from: accounts[0],
